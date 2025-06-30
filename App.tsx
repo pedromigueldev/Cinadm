@@ -1,55 +1,12 @@
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-function HomeScreen(props: NativeStackScreenProps<RootStackParamList, 'Home'>) {
-  const {navigation} = props;
-  const [back, setBack] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (props.route.params?.isBack) setBack(true);
-  }, [props.route.params?.isBack]);
-
-  return (
-    <View style={styles.container}>
-      <Text>Hey</Text>
-      <Button
-        title="Profile page"
-        onPress={() =>
-          navigation.navigate('Profile', {
-            itemId: 86,
-            otherParam: 'anything you want here',
-          })
-        }
-      />
-      {back ? <Text>is back</Text> : <Text />}
-    </View>
-  );
-}
-
-function ProfileScreen(props: NativeStackScreenProps<RootStackParamList, 'Profile'>) {
-  const {navigation} = props;
-  const {itemId, otherParam} = props.route.params;
-
-  return (
-    <View style={styles.container}>
-      <Text>ProfileScreen</Text>
-      <Text>itemId: {JSON.stringify(itemId)}</Text>
-      <Text>otherParam: {JSON.stringify(otherParam)}</Text>
-      <Button
-        title="Back to home"
-        onPress={() => navigation.popTo('Home', { isBack: true })}
-      />
-    </View>
-  );
-}
+import { HomeScreen } from './src/screens/Home';
+import { ProfileScreen } from './src/screens/Profile';
 
 export type RootStackParamList = {
   Home: { isBack?: boolean } | undefined;
-  Profile: { itemId: number; otherParam?: string };
+  Profile: { userName: string; email: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -58,7 +15,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Profile"
         >
         <Stack.Screen
           name="Home"
@@ -69,16 +26,10 @@ function App() {
           name="Profile"
           options={{ title: 'Profile' }}
           component={ProfileScreen}
+          initialParams={{ userName: 'Pedro', email: 'pedro@gmail.com' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
 export default App;
